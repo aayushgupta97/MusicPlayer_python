@@ -29,7 +29,7 @@ def play_playlist(lst):
                 break
     # main()
 
-# select the playlist to use
+# Select the playlist to use
 def select_playlist():
     print("Enter the playlist you want to play: \n")
     print("0 : default playlist (all songs)\n")
@@ -55,7 +55,7 @@ def show_playlist(lst):
     # main() 
 # playlist(default)
 
-# Add or remove the songs from playlist
+# Add or remove the song from the selected playlist
 def addto_playlist(lst):
     # print("Press 1 to add songs to the current playlist")
     # print("Press 2 to remove songs from the current playlist")
@@ -82,9 +82,7 @@ def addto_playlist(lst):
 # play_all() 
 # plays all the songs in default playlist or directory 
 
-select_playlist()
-
-
+# select_playlist()
 
 
 
@@ -94,12 +92,15 @@ def play_song(id):
     pygame.mixer.music.load(default[id])
     print(default[id])
     pygame.mixer.music.play(0)
-    c = input("what next?")
-    if c=='stop':
+    c = input("press y to go back to main menu.")
+    if c=='y':
         pygame.mixer.music.stop()
         print("okay stopping all songs.")
         main()
+    else:
+        end()
 def songs():
+    show_playlist(default)
     song_id = int(input("What song would you like to play? "))
     play_song(song_id)
 
@@ -111,19 +112,19 @@ def greeting():
 def end():
     print("goodbye!")   
 def main():
-    print("Press 1 to play all songs")
-    print("Press 2 to list all songs")
-    print("press 3 to select a song")
+    print("Press 1 to select playlist")
+    # print("Press 2 to list all songs")
+    print("press 2 to select a song")
     print("press 9 to exit")
     my_dict = {
-        1:play_all,
-        2:playlist,
-        3:songs,
+        1:select_playlist,
+        # 2:playlist,
+        2:songs,
         9:end
     }
     c = int(input("\nWhat would you like to do?"))
     my_dict.get(c,lambda:'Invalid')()
 
-# greeting()
+greeting()
 # select_playlist()
 
