@@ -9,6 +9,7 @@ favourite = []
 current = [] 
 all_playlist = [default, current, favourite]
 
+# Plays all songs in the selected playlist
 def play_playlist(lst):
     print("Playing all the songs in the selected playlist\n")
     print("next - to play the next song in playlist\n")
@@ -28,6 +29,7 @@ def play_playlist(lst):
                 break
     # main()
 
+# select the playlist to use
 def select_playlist():
     print("Enter the playlist you want to play: \n")
     print("0 : default playlist (all songs)\n")
@@ -43,36 +45,46 @@ def select_playlist():
     elif choice == 2 : 
         addto_playlist(all_playlist[lst_id])
 
+#Shows all the songs in the passed playlist
 def show_playlist(lst):
     length = len(lst)
     indexes = [i for i in range(length)]
-    c = list(zip(lst,indexes))
+    c = list(zip(indexes,lst))
     for i in c:
         print(i)
     # main() 
 # playlist(default)
 
-#Shows all the songs in the passed playlist
+# Add or remove the songs from playlist
 def addto_playlist(lst):
     # print("Press 1 to add songs to the current playlist")
     # print("Press 2 to remove songs from the current playlist")
     flag = 'y'
+    show_playlist(default)
+
     while flag=='y': 
         choice = input("Press a to Add and r to Remove from playlist: ")
+        # show_playlist(default)
         c = int(input("Enter the index of the song to be added/removed: "))
         if choice == 'a':
             lst.append(default[c])
+            show_playlist(lst)
         elif choice == 'r':
             lst.pop(c)
+            show_playlist(lst)
         else: 
             print("Invalid Choice.")
         flag = input("Would you like to add/remove another song? (y/n)")
     print(lst)
+    print("Edited the list. Now playing the playlist. \n")
+    play_playlist(lst)
 # playlist()
 # play_all() 
 # plays all the songs in default playlist or directory 
 
-# select_playlist()
+select_playlist()
+
+
 
 
 
