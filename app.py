@@ -5,26 +5,43 @@ pygame.init()
 default = os.listdir('music/')
 print(default)
 os.chdir("music/")
+favourite = [] 
+current = [] 
+all_playlist = [default, current, favourite]
 
-
-def play_all():
-    print("Playing all the songs\n")
+def play_playlist(lst):
+    print("Playing all the songs in the selected playlist\n")
     print("next - to play the next song in playlist\n")
     print("stop - to stop the playback\n")
     play = True
     while play:
-        for song in default:
-                pygame.mixer.music.load(song)
-                print(song)
-                pygame.mixer.music.play(0)
-                c = input("what do you want to do:")
-                if c=='next':
-                    pygame.mixer.music.stop()
-                if c=='stop':
-                    pygame.mixer.music.stop()
-                    play = False
-                    break
-    main()
+        for song in lst:
+            pygame.mixer.music.load(song)
+            print(song)
+            pygame.mixer.music.play(0)
+            c = input("what do you want to do:")
+            if c=='next':
+                pygame.mixer.music.stop()
+            if c=='stop':
+                pygame.mixer.music.stop()
+                play = False
+                break
+    # main()
+
+def select_playlist():
+    print("Enter the playlist you want to play: \n")
+    print("0 : default playlist (all songs)\n")
+    print("1 : current playlist \n")
+    print("2 : Favourite playlist\n")
+    lst_id = int(input("Enter the ID of the playlist to play: "))
+    show_playlist(all_playlist[lst_id])
+    print("\n1) Play the list\n2)Edit the list\n")
+    choice = int(input("Enter your choice: "))
+    if choice == 1 :     
+        print(f"Playing the playlist {all_playlist[lst_id]} ")
+        play_playlist(all_playlist[lst_id])
+    elif choice == 2 : 
+        addto_playlist(all_playlist[lst_id])
 
 def show_playlist(lst):
     length = len(lst)
@@ -32,14 +49,30 @@ def show_playlist(lst):
     c = list(zip(lst,indexes))
     for i in c:
         print(i)
-    main() 
+    # main() 
 # playlist(default)
 
 #Shows all the songs in the passed playlist
-def playlist():
-    show_playlist(default)
+def addto_playlist(lst):
+    # print("Press 1 to add songs to the current playlist")
+    # print("Press 2 to remove songs from the current playlist")
+    flag = 'y'
+    while flag=='y': 
+        choice = input("Press a to Add and r to Remove from playlist: ")
+        c = int(input("Enter the index of the song to be added/removed: "))
+        if choice == 'a':
+            lst.append(default[c])
+        elif choice == 'r':
+            lst.pop(c)
+        else: 
+            print("Invalid Choice.")
+        flag = input("Would you like to add/remove another song? (y/n)")
+    print(lst)
+# playlist()
 # play_all() 
 # plays all the songs in default playlist or directory 
+
+# select_playlist()
 
 
 
@@ -79,4 +112,6 @@ def main():
     c = int(input("\nWhat would you like to do?"))
     my_dict.get(c,lambda:'Invalid')()
 
-greeting()
+# greeting()
+# select_playlist()
+
