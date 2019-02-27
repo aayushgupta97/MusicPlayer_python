@@ -1,12 +1,35 @@
+from __future__ import unicode_literals
 import os
 import pygame
+import math 
+import youtube_dl
 pygame.init()
 
 default = os.listdir('music/')
 print(default)
-os.chdir("music/")
 favourite = [] 
 current = [] 
+
+#Makes a list of favourite songs from the text file
+with open('fav.txt', 'r') as f:
+    favourite = [line.strip() for line in f]
+# f.close() 
+
+def favourites(item):
+    # os.chdir('../')
+    with open('../fav.txt', 'a') as f : 
+        f.write(item)
+        f.write("\n")
+    # f.close()
+    favourite.append(item)
+    # os.chdir('music/') 
+
+
+print("this is favourite playlist \n")
+print(favourite)
+
+os.chdir("music/")
+
 all_playlist = [default, current, favourite]
 
 # Plays all songs in the selected playlist
@@ -14,11 +37,14 @@ def play_playlist(lst):
     print("Playing all the songs in the selected playlist\n")
     print("next - to play the next song in playlist\n")
     print("stop - to stop the playback\n")
+    print("fav - to add to favourites\n")
     play = True
     while play:
         for song in lst:
             pygame.mixer.music.load(song)
             print(song)
+            a = pygame.mixer.Sound(song)
+            print("length: ",int(a.get_length()//60),"min",math.floor(a.get_length())%60,"seconds")
             pygame.mixer.music.play(0)
             c = input("what do you want to do:")
             if c=='next':
@@ -27,10 +53,16 @@ def play_playlist(lst):
                 pygame.mixer.music.stop()
                 play = False
                 break
+            if c=='fav':
+                favourites(song)
+
+
     # main()
 
 # Select the playlist to use
 def select_playlist():
+    default = os.listdir()
+
     print("Enter the playlist you want to play: \n")
     print("0 : default playlist (all songs)\n")
     print("1 : current playlist \n")
@@ -51,7 +83,7 @@ def show_playlist(lst):
     indexes = [i for i in range(length)]
     c = list(zip(indexes,lst))
     for i in c:
-        print(i)
+        print(i[0],"---->", i[1])
     # main() 
 # playlist(default)
 
@@ -72,9 +104,19 @@ def addto_playlist(lst):
         elif choice == 'r':
             lst.pop(c)
             show_playlist(lst)
+             
         else: 
             print("Invalid Choice.")
         flag = input("Would you like to add/remove another song? (y/n)")
+        
+    # Rewrite the fav file if favourite playlist is changed.
+    if lst==favourite:
+        with open('../fav.txt', 'w') as f:
+            for item in lst:
+                f.write("%s\n" % item)
+                # f.write(item)
+                # f.write("\n")
+        # f.close()
     print(lst)
     print("Edited the list. Now playing the playlist. \n")
     play_playlist(lst)
@@ -115,16 +157,45 @@ def main():
     print("Press 1 to select playlist")
     # print("Press 2 to list all songs")
     print("press 2 to select a song")
+    print("press 8 to download a song from youtube")
     print("press 9 to exit")
     my_dict = {
         1:select_playlist,
         # 2:playlist,
         2:songs,
+        8:youtube,
         9:end
     }
     c = int(input("\nWhat would you like to do?"))
     my_dict.get(c,lambda:'Invalid')()
 
+def youtube():
+    # from __future__ import unicode_literals
+
+    # import youtube_dl
+    link = []
+    linkinput = input("Enter the url you want to download: ")
+    link.append(linkinput)
+    ydl_opts = {
+            'format': 'best',
+            # 'format': 'bestaudio/best',
+            'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'vorbis',
+            'preferredquality': '320',
+            #  'nopostoverwrites': True
+        }],
+    }
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+    #     ydl.download(['https://www.youtube.com/watch?v=ZkqyIoYAXV8'])
+        ydl.download(link)
+        # default = os.listdir()
+        # print(default)
+    main()
+
+
 greeting()
 # select_playlist()
+
+
 
