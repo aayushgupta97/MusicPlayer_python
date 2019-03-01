@@ -4,7 +4,7 @@ import pygame
 import math 
 import youtube_dl
 from random import randint,shuffle
-import random
+# import random
 # import sys
 pygame.init()
 
@@ -39,10 +39,12 @@ all_playlist = [default, current, favourite]
 def play_playlist(lst):
     print("Playing all the songs in the selected playlist\n")
     print("next - to play the next song in playlist\n")
-    print("stop - to stop the playback\n")
+    print("stop - to stop the playback and return to main menu\n")
     print("fav - to add to favourites\n")
     print("pause - to pause the playback\n")
     print("play - to resume the playback\n")
+    
+    
 
     play = True
     while play:
@@ -70,6 +72,7 @@ def play_playlist(lst):
                     pygame.mixer.music.pause()
                 elif c=='play':
                     pygame.mixer.music.unpause()
+            
                 else:
                     print("Invalid Input! Try (play,pause,stop,fav,next) ")
             if c=='stop':
@@ -97,7 +100,7 @@ def select_playlist():
    
 
     show_playlist(all_playlist[lst_id])
-    print("\n1) Play the list\n2)Edit the list\n3) Shuffle the list")
+    print("\n1) Play the list\n2) Edit the list\n3) Shuffle the list")
     # choice = int(input("Enter your choice: "))
     choice = input("Enter your choice: ")
 
