@@ -41,16 +41,17 @@ def play_playlist(lst):
     print("next - to play the next song in playlist\n")
     print("stop - to stop the playback\n")
     print("fav - to add to favourites\n")
-    print("pause - to add to favourites\n")
-    print("play - to add to favourites\n")
+    print("pause - to pause the playback\n")
+    print("play - to resume the playback\n")
 
     play = True
     while play:
         for song in lst:
             pygame.mixer.music.load(song)
-            print(song)
+            print("\n" + "-"*150 + "\n" + "Currently Playing : " + song)
             a = pygame.mixer.Sound(song)
             print("length: ",int(a.get_length()//60),"min",math.floor(a.get_length())%60,"seconds")
+            print('-' * 150)
             pygame.mixer.music.play(0)
             
             playing = True
@@ -89,24 +90,38 @@ def select_playlist():
     print("1 : current playlist \n")
     print("2 : Favourite playlist\n")
     lst_id = int(input("Enter the ID of the playlist to play: "))
+    
+    if lst_id > 2 or lst_id < 0:
+        print("You have entered an invalid index. returning to main menu.")
+        main() 
+   
+
     show_playlist(all_playlist[lst_id])
     print("\n1) Play the list\n2)Edit the list\n3) Shuffle the list")
-    choice = int(input("Enter your choice: "))
-    if choice == 1 :     
+    # choice = int(input("Enter your choice: "))
+    choice = input("Enter your choice: ")
+
+    if choice == '1' :     
         print(f"Playing the playlist {all_playlist[lst_id]} ")
         play_playlist(all_playlist[lst_id])
-    elif choice == 2 : 
+    elif choice == '2' : 
         addto_playlist(all_playlist[lst_id])
-    elif choice == 3 : 
+    elif choice == '3' : 
         shuffle_playlist(all_playlist[lst_id])
+    else: 
+        print("\nInvalid Input. Returning to main menu. ")
+        main() 
 
 #Shows all the songs in the passed playlist
 def show_playlist(lst):
     length = len(lst)
     indexes = [i for i in range(length)]
     c = list(zip(indexes,lst))
+    print("*" * 150)
     for i in c:
         print(i[0],"---->", i[1])
+    print("*" * 150)
+    
     # main() 
 # playlist(default)
 
@@ -118,19 +133,24 @@ def addto_playlist(lst):
     show_playlist(default)
 
     while flag=='y': 
-        choice = input("Press a to Add and r to Remove from playlist: ")
+        try: 
+            choice = input("Press a to Add and r to Remove from playlist: ")
         # show_playlist(default)
-        c = int(input("Enter the index of the song to be added/removed: "))
-        if choice == 'a':
-            lst.append(default[c])
-            show_playlist(lst)
-        elif choice == 'r':
-            lst.pop(c)
-            show_playlist(lst)
+            c = int(input("Enter the index of the song to be added/removed: "))
+            if choice == 'a':
+                lst.append(default[c])
+                show_playlist(lst)
+            elif choice == 'r':
+                lst.pop(c)
+                show_playlist(lst)
              
-        else: 
-            print("Invalid Choice.")
-        flag = input("Would you like to add/remove another song? (y/n)")
+            else: 
+                print("Invalid Choice.")
+        except: 
+                IndexError
+                print("Invalid index try again.")
+        finally: 
+            flag = input("Would you like to add/remove another song? (y/n)")
         
     # Rewrite the fav file if favourite playlist is changed.
     if lst==favourite:
@@ -140,8 +160,9 @@ def addto_playlist(lst):
                 # f.write(item)
                 # f.write("\n")
         # f.close()
-    print(lst)
+    
     print("Edited the list. Now playing the playlist. \n")
+    show_playlist(lst)
     play_playlist(lst)
 # playlist()
 # play_all() 
@@ -183,6 +204,7 @@ def main():
     # print("Press 2 to list all songs")
     print("press 2 to select a song")
     print("press 3 to shuffle all songs")
+    print("press 7 to sort all songs by time or name")
     print("press 8 to download a song from youtube")
     print("press 9 to exit")
     print("*"*150 + "\n" + "-" * 150)
@@ -191,7 +213,8 @@ def main():
         1:select_playlist,
         # 2:playlist,
         2:songs,
-        3:shuffle,
+        3:shuffle_playlist,
+        7:sort_playlist,
         8:youtube,
         9:end
     }
@@ -236,7 +259,28 @@ def shuffle_playlist(lst=default):
     # print(shuffled_playlist)
 
     play_playlist(shuffled_playlist)
+
+import glob
+# import os
+
+ 
+def sort_playlist(lst=default):
+    # mtime = lambda f: os.stat(os.path.join(lst, f)).st_mtime
+    # sorted_list =  list(sorted(os.listdir(lst), key=mtime))
+    # print(sorted_list)
+    c = input("\n N to sort by name \n D to sort by Date: ")
     
+    if c=='d':
+        files = glob.glob("*.ogg")
+        files.sort(key=os.path.getmtime)
+        print("\n".join(files))         
+    elif c=='n':
+        for x in sorted(lst):
+            print(x)
+    else: 
+        print("Invalid selection")
+    main()     
+  
 
 greeting()
 # select_playlist()
