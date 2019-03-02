@@ -72,6 +72,8 @@ def play_playlist(lst):
                     pygame.mixer.music.pause()
                 elif c=='play':
                     pygame.mixer.music.unpause()
+                elif c=='main':
+                    main()
             
                 else:
                     print("Invalid Input! Try (play,pause,stop,fav,next) ")
@@ -200,6 +202,7 @@ def greeting():
     main()
 def end():
     print("goodbye!")   
+    exit()
 def main():
     print("\n\n\n")
     print("-"*150 + "\n" + "*" * 150)
@@ -207,6 +210,9 @@ def main():
     # print("Press 2 to list all songs")
     print("press 2 to select a song")
     print("press 3 to shuffle all songs")
+    print("press 5 to for lyrics")
+    
+
     print("press 7 to sort all songs by time or name")
     print("press 8 to download a song from youtube")
     print("press 9 to exit")
@@ -217,6 +223,8 @@ def main():
         # 2:playlist,
         2:songs,
         3:shuffle_playlist,
+        5:lyrics,
+        6:main_test,
         7:sort_playlist,
         8:youtube,
         9:end
@@ -283,8 +291,20 @@ def sort_playlist(lst=default):
     else: 
         print("Invalid selection")
     main()     
-  
+import lyricsgenius
 
+def lyrics():
+    genius = lyricsgenius.Genius("XiGHD1n8XJcyXaxfrFdmx1C7MgV3ZMLcPbq_5U9Mi_xmWjVyPbs9GXlfRmjJb4_o")
+    # artist = genius.search_artist("Arijit", max_songs=3)
+    # print(artist.songs)
+    # song = genius.search_song("turn the page", 'metallica')
+    songname = input("enter the name of the song")
+    artistname = input("enter the name of the artist")
+    song = genius.search_song(songname, artistname)
+    print(song.lyrics)
+
+def main_test():
+    pass   
 greeting()
 # select_playlist()
 
