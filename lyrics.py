@@ -9,7 +9,7 @@ class Lyrics():
         self.song_artist = artist
  
     def lyrics(self):
-        genius = lyricsgenius.Genius("XiGHD1n8XJcyXaxfrFdmx1C7MgV3ZMLcPbq_5U9Mi_xmWjVyPbs9GXlfRmjJb4_o")
+        genius = lyricsgenius.Genius("client-access-token here")
       
         song = genius.search_song(self.song_name, self.song_artist)
         print(song.lyrics)
