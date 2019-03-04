@@ -20,6 +20,7 @@ class Youtube():
 # lyrics.tc_lyrics()   
 
 def download_from_youtube():
+    """takes a url input from the user and downloads the link from youtube"""
     linkinput = input("Enter the url you want to download: ")
     youtube_object = Youtube(linkinput)
     youtube_object.youtube()

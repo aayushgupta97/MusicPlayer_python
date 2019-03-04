@@ -15,6 +15,7 @@ class Lyrics():
         print(song.lyrics)
 
 def get_lyrics():
+    """takes song and artist and input and searches for lyrics"""
     songname = input("Song Name: ")
     artistname = input("Artist Name: ")
     lyrics_obj = Lyrics(songname, artistname)
