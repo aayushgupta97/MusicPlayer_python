@@ -20,7 +20,10 @@ all_playlist = [default, current, favourite]
 
 class Playlist:
 
-    def play_playlist(self, selected_playlist):
+    def __init__(self, selected_playlist):
+        self.selected_playlist = selected_playlist
+
+    def play_playlist(self):
         """plays the selected playlist in an ordered or shuffled way"""
         print("Playing all the songs in the selected playlist\
             \n\nnext - to play the next song in playlist\
@@ -33,7 +36,7 @@ class Playlist:
      
         play = True
         while play:
-            for song in selected_playlist:
+            for song in self.selected_playlist:
                 pygame.mixer.music.load(song)
                 print("\n" + "-"*150 + "\n" + "Currently Playing : " + song)
                 current_song = pygame.mixer.Sound(song)
@@ -73,20 +76,22 @@ class Playlist:
 
         
    
-    def show_playlist(self, selected_playlist):
+    def show_playlist(self):
         """shows the selected playlist item by item"""
-        length = len(selected_playlist)
+        length = len(self.selected_playlist)
         indexes = [index+1 for index in range(length)]
-        items = list(zip(indexes, selected_playlist))
+        items = list(zip(indexes, self.selected_playlist))
         print("*" * 150)
         for item in items:
             print(item[0], "---->", item[1])
         print("*" * 150)
 
-    def addto_playlist(self, selected_playlist):
+    def addto_playlist(self):
         """adds or removes songs from the selected playlist"""
         flag = 'y'
-        self.show_playlist(default)
+        for index in range(len(default)):
+            print(index+1, default[index])
+
 
         while flag == 'y':
             try:
@@ -94,11 +99,14 @@ class Playlist:
                 song_id = int(input("Enter the index of the song to be added/removed: "))
                 song_id-=1
                 if choice == 'a':
-                    selected_playlist.append(default[song_id])
-                    self.show_playlist(selected_playlist)
+                    if default[song_id] in self.selected_playlist:
+                        print("Already added in the playlist.")
+                    else:
+                        self.selected_playlist.append(default[song_id])
+                        self.show_playlist()
                 elif choice == 'r':
-                    selected_playlist.pop(song_id)
-                    self.show_playlist(selected_playlist)
+                    self.selected_playlist.pop(song_id)
+                    self.show_playlist()
 
                 else:
                     print("Invalid Choice.")
@@ -109,21 +117,20 @@ class Playlist:
                 flag = input("Would you like to add/remove another song? (y/n)")
 
         # Rewrite the fav file if favourite playlist is changed.
-        if selected_playlist == favourite:
+        if self.selected_playlist == favourite:
             with open('../fav.txt', 'w') as f:
-                for item in selected_playlist:
+                for item in self.selected_playlist:
                     f.write("%s\n" % item)
 
         print("Edited the list. Now playing the playlist. \n")
-        self.show_playlist(selected_playlist)
-        self.play_playlist(selected_playlist)
+        self.show_playlist()
+        self.play_playlist()
 
-    def shuffle_playlist(self, selected_playlist=default):
+    def shuffle_playlist(self):
         """shuffles the selected playlist inplace using random shuffle"""
-        shuffled_playlist = selected_playlist[:]
-        shuffle(shuffled_playlist)
-        self.show_playlist(shuffled_playlist)
-        self.play_playlist(shuffled_playlist)
+        shuffle(self.selected_playlist)
+        self.show_playlist()
+        self.play_playlist()
 
 
     def favourites(self, item):
@@ -141,7 +148,6 @@ class Playlist:
 
 def select_playlist():
     """selects a playlist to play, shuffle or add or remove items"""
-    playlist_object = Playlist()
     default = os.listdir()
 
     print("Enter the playlist you want to play: \n")
@@ -152,19 +158,23 @@ def select_playlist():
 
     if lst_id > 2 or lst_id < 0:
         print("You have entered an invalid index. returning to main menu.")
-        # main()
+    
+    playlist_object = Playlist(all_playlist[lst_id])
+    playlist_object.show_playlist()
 
-    playlist_object.show_playlist(all_playlist[lst_id])
     print("\n1) Play the list\n2) Edit the list\n3) Shuffle the list")
     choice = input("Enter your choice: ")
 
     if choice == '1':
         print(f"Playing the playlist {all_playlist[lst_id]} ")
-        playlist_object.play_playlist(all_playlist[lst_id])
+        playlist_object.play_playlist()
+
     elif choice == '2':
-        playlist_object.addto_playlist(all_playlist[lst_id])
+        playlist_object.addto_playlist()
+
     elif choice == '3':
-        playlist_object.shuffle_playlist(all_playlist[lst_id])
+        playlist_object.shuffle_playlist()
+
     else:
         print("\nInvalid Input. Returning to main menu. ")
         
@@ -173,12 +183,12 @@ def sort_playlist(lst=default):
     """sorts the selected playlist according to the time of modification.
     Recently added songs in the directory come on top.
     """
-    sortobj = Playlist()
     name_list = default[:]
     path = ''
     full_list = [os.path.join(path,i) for i in name_list]
     time_sorted_list = sorted(full_list, key=os.path.getctime)
     time_sorted_list.reverse()
-    sortobj.show_playlist(time_sorted_list)
-    sortobj.play_playlist(time_sorted_list)
+    sortobj = Playlist(time_sorted_list)
+    sortobj.show_playlist()
+    sortobj.play_playlist()
 
